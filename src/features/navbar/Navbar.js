@@ -13,25 +13,25 @@ import { Link } from "react-router-dom";
 import { authenticateStatus } from '../user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
-function SideNav(props) {
-    return (
-        <Box>
-            <SwipeableDrawer
-                anchor="left"
-                open={props.isSideNavOpen}
-                onClose={props.setisSideNavOpen()}
-            >
-            <SideNavItem/>
-            </SwipeableDrawer>
+const SideNav = React.forwardRef((props, ref) =>  (
+  <Box>
+    <SwipeableDrawer
+        ref={ref}
+        anchor="left"
+        open={props.isSideNavOpen}
+        onClose={() => props.setisSideNavOpen()}
+        onOpen={() => console.log("this is good")}
+    >
+    <SideNavItem/>
+    </SwipeableDrawer>
 
-        </Box>
-    )
-}
+  </Box>
+))
 
 export default function Navbar() {
   const [isSideNavOpen, setisSideNavOpen] = React.useState(false)
-  const islogin = useDispatch(authenticateStatus)
-
+  const islogin = useSelector(authenticateStatus)
+  const SideNavRef = React.createRef()
   const toggleSideNav = () => {
     setisSideNavOpen(current => !current);
   }
@@ -50,19 +50,19 @@ export default function Navbar() {
           >
             <MenuIcon/>
 
-            <SideNav isSideNavOpen={isSideNavOpen} setisSideNavOpen={toggleSideNav}/>
+            {isSideNavOpen ? <SideNav ref={SideNavRef} isSideNavOpen={isSideNavOpen} setisSideNavOpen={toggleSideNav}/>: "" }
           </IconButton>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link to="/">Motherhelp</Link>
           </Typography>
-          {!islogin ? <React.Fragment>
-            <Link to="signup"> <Button color="inherit">Sign Up</Button> </Link>
-            <Link to="login"> <Button color="inherit">Log In</Button></Link> </React.Fragment>
-          : <Link to="profile"> <Button color="inherit">profile</Button></Link>}
+          {islogin ? <React.Fragment><Link to="profile"> <Button color="inherit">profile</Button></Link>
+                            <Button color="inherit">Log out</Button></React.Fragment>
+          : <React.Fragment>
+          <Link to="signup"> <Button color="inherit">Sign Up</Button> </Link>
+          <Link to="login"> <Button color="inherit">Log In</Button></Link> </React.Fragment>}
           <Button color="inherit">Contact Us</Button>
           <Button color="inherit">About Us</Button>
-          <Button color="inherit">Log out</Button>
         </Toolbar>
       </AppBar>
     </Box>

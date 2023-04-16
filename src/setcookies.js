@@ -32,7 +32,7 @@ export function getCookie(name) {
     return null;
 }
 
-function checkCookie() {
+export function checkCookie() {
     // Get cookie using our custom function
     var firstName = getCookie("firstName");
     
